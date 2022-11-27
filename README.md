@@ -1,5 +1,5 @@
 <p align="center">
-	<img align="center" src="https://raw.githubusercontent.com/JOTSR/Dedale/assets/logo-512.png"  />
+	<img align="center" src="assets/logo-192.png"  />
 	<br>
 </p>
 
