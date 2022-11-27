@@ -246,15 +246,16 @@ function replaceTemplatePlugins({ plugins }: Template, context: Record<string, u
  */
 export class LoadInfo {
 	#spinner: ReturnType<typeof ConsoleSpinner>
+	#sub = false
+	#subMessage?: string
+	#mainMessage?: string
 
 	/**
 	 * The constructor function takes an optional parameter, `indent`, which is used to indent the
 	 * spinner
-	 * @param {number} [indent=0] - number = 0
 	 */
-	constructor(indent: number = 0) {
+	constructor() {
 		this.#spinner = ConsoleSpinner('')
-		this.#spinner.indent = 4 * indent
 		this.#spinner.start()
 	}
 
@@ -264,10 +265,12 @@ export class LoadInfo {
 	 * @param {string} message - string - The message to display
 	 * @param [step] - { current: number, total: number }
 	 */
-	push(message: string, step?: { current: number, total: number }): void {
-		if (this.#spinner.text) console.log(`${ConsoleColors.bold.rgb24('Done', 0x00cc88)} ${this.#spinner.text}`)
-		if (step) message = `${message} [${step.current}/${step.total}]`
-		this.#spinner.text = message
+	push(message: string, step?: { current: number, total: number }, sub = false): void {
+		if (this.#spinner.text) console.log(`${ConsoleColors.bold.rgb24('Done', 0x00cc88)} ${this.#mainMessage}`)
+
+		if (sub) this.#subMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+		else this.#mainMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+		this.#spinner.text = [this.#mainMessage, this.#subMessage].join('\n\t')
 	}
 
 	/**
