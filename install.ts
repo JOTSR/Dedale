@@ -89,7 +89,7 @@ loadInfo.push(`Generating ${dedale.session.directory.root} directory`, { current
 await makeTree(tree, dedale.session.home)
 
 loadInfo.push(`Installing default config files from https://github.com/JOTSR/Dedale/install/.dedale`, { current: 2, total: 6 })
-await installFromGitub('JOTSR/Dedale/install/.dedale', dedale.session.directory.root, loadInfo)
+await installFromGitub('JOTSR/Dedale/tree/main/install/.dedale', dedale.session.directory.root, loadInfo)
 
 loadInfo.push(`Installing default templates from https://github.com/JOTSR/dedale-templates`, { current: 3, total: 6 })
 await installFromGitub('JOTSR/dedale-templates', dedale.session.directory.templates, loadInfo)
