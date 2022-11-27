@@ -57,7 +57,7 @@ async function installShellCompletions(os: typeof Deno.build.os) {
 	switch (os) {
 		case 'windows':
 			{
-				const completions = await fetch('https://github.com/JOTSR/dedale/install/DedaleCompletions.ps1')
+				const completions = await fetch('https://github.com/JOTSR/Dedale/install/DedaleCompletions.ps1')
 				const modulePath = Deno.env.get('PSModulePath')?.split(';')[0]
 				if (modulePath === undefined) throw new Error('$env:PSModulePath is not set, can\'t install completions for powershell')
 
@@ -80,23 +80,31 @@ async function installShellCompletions(os: typeof Deno.build.os) {
 	}
 }
 
+async function installCli(url: string) {
+	const command = new Deno.Command(Deno.execPath(), { args: [ 'install', '-A', '--unstable', '--quiet', '-n dedale', '-f', url] })
+	await command.output()
+}
+
 //Installation steps
 
 loadInfo.push(`Generating ${dedale.session.directory.root} directory`, { current: 1, total: 8 })
 await makeTree(tree, dedale.session.home)
 
-loadInfo.push(`Installing default config files from https://github.com/JOTSR/dedale/install/.dedale`, { current: 2, total: 8 })
-await installFromGitub('JOTSR/dedale/install/.dedale', dedale.session.directory.root)
+loadInfo.push(`Installing default config files from https://github.com/JOTSR/Dedale/install/.dedale`, { current: 2, total: 6 })
+await installFromGitub('JOTSR/Dedale/install/.dedale', dedale.session.directory.root)
 
-loadInfo.push(`Installing default templates from https://github.com/JOTSR/dedale-templates`, { current: 3, total: 8 })
+loadInfo.push(`Installing default templates from https://github.com/JOTSR/dedale-templates`, { current: 3, total: 6 })
 await installFromGitub('JOTSR/dedale-templates', dedale.session.directory.templates)
 
 const config = await readConfigFile(dedale.session.directory.config)
 
-loadInfo.push(`Caching plugins`, { current: 4, total: 8 })
+loadInfo.push(`Caching plugins`, { current: 4, total: 6 })
 await installPlugins(config.plugins)
 
-loadInfo.push(`Installing shell completion for ${Deno.build.os === 'windows' ? 'powershell' : 'bash'}`, { current: 5, total: 8 })
+loadInfo.push(`Installing shell completion for ${Deno.build.os === 'windows' ? 'powershell' : 'bash'}`, { current: 5, total: 6 })
 await installShellCompletions(Deno.build.os)
+
+loadInfo.push(`Installing cli`, { current: 6, total: 6 })
+await installCli('https://github.com/JOTSR/Dedale/main.ts')
 
 console.log('Dédale is successfully installed, try "dedale -h" or visit https://doc.dedale.io')
