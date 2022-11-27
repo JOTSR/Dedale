@@ -87,7 +87,7 @@ async function installCli(url: string) {
 
 //Installation steps
 
-loadInfo.push(`Generating ${dedale.session.directory.root} directory`, { current: 1, total: 8 })
+loadInfo.push(`Generating ${dedale.session.directory.root} directory`, { current: 1, total: 6 })
 await makeTree(tree, dedale.session.home)
 
 loadInfo.push(`Installing default config files from https://github.com/JOTSR/Dedale/install/.dedale`, { current: 2, total: 6 })

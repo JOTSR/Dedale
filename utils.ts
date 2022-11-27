@@ -255,6 +255,7 @@ export class LoadInfo {
 	constructor(indent: number = 0) {
 		this.#spinner = ConsoleSpinner('')
 		this.#spinner.indent = 4 * indent
+		this.#spinner.start()
 	}
 
 	/**
