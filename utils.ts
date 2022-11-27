@@ -256,7 +256,11 @@ export class LoadInfo {
 	 */
 	constructor() {
 		this.#spinner = ConsoleSpinner('')
+	}
+
+	#start = () => {
 		this.#spinner.start()
+		this.#start = () => undefined
 	}
 
 	/**
@@ -266,10 +270,19 @@ export class LoadInfo {
 	 * @param [step] - { current: number, total: number }
 	 */
 	push(message: string, step?: { current: number, total: number }, sub = false): void {
-		if (this.#spinner.text) console.log(`${ConsoleColors.bold.rgb24('Done', 0x00cc88)} ${this.#mainMessage}`)
+		this.#start()
+		if (this.#spinner.text && !sub) {
+			console.log(`${ConsoleColors.bold.rgb24('Done', 0x00cc88)} ${this.#mainMessage}`)
+			if (this.#subMessage) console.log('\n')
+		}
 
-		if (sub) this.#subMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
-		else this.#mainMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+		if (sub) {
+			this.#subMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+		}
+		else {
+			this.#subMessage = undefined
+			this.#mainMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+		}
 		this.#spinner.text = [this.#mainMessage, this.#subMessage].join('\n\t')
 	}
 
