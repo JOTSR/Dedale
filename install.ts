@@ -31,11 +31,10 @@ async function installPlugins(plugins: Config['plugins']) {
 }
 
 async function installFromGitub(url: string, outputDirectory: string) {
-	const ghInfo = new LoadInfo(1)
 	if (!url.startsWith('https://github.com/')) url = `https://github.com/${url}`
     try {
 		for await (const { url: fileUrl, relativePath, file } of githubFolderDownload(url)) {
-			ghInfo.push(`Installing: ${fileUrl}`)
+			console.log(`Installing: ${fileUrl}`)
 			const outPath = path.join(outputDirectory, relativePath)
 			await fs.ensureFile(outPath)
 			const fsFile = await Deno.open(outPath, {
@@ -48,8 +47,6 @@ async function installFromGitub(url: string, outputDirectory: string) {
 		}
     } catch (e) {
         throw new Error('Unable to install default dedale files', { cause: e })
-    } finally {
-		ghInfo.clear()
 	}
 }
 
