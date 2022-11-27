@@ -30,11 +30,11 @@ async function installPlugins(plugins: Config['plugins']) {
 	}
 }
 
-async function installFromGitub(url: string, outputDirectory: string) {
+async function installFromGitub(url: string, outputDirectory: string, logger: LoadInfo) {
 	if (!url.startsWith('https://github.com/')) url = `https://github.com/${url}`
     try {
 		for await (const { url: fileUrl, relativePath, file } of githubFolderDownload(url)) {
-			console.log(`Installing: ${fileUrl}`)
+			logger.push(`Installing: ${fileUrl}`, undefined, true)
 			const outPath = path.join(outputDirectory, relativePath)
 			await fs.ensureFile(outPath)
 			const fsFile = await Deno.open(outPath, {
@@ -43,7 +43,8 @@ async function installFromGitub(url: string, outputDirectory: string) {
 				truncate: true
 			})
 			await file?.pipeTo(fsFile.writable)
-			fsFile.close()
+			//TODO fix throw on closing
+			// fsFile.close()
 		}
     } catch (e) {
         throw new Error('Unable to install default dedale files', { cause: e })
@@ -88,10 +89,10 @@ loadInfo.push(`Generating ${dedale.session.directory.root} directory`, { current
 await makeTree(tree, dedale.session.home)
 
 loadInfo.push(`Installing default config files from https://github.com/JOTSR/Dedale/install/.dedale`, { current: 2, total: 6 })
-await installFromGitub('JOTSR/Dedale/install/.dedale', dedale.session.directory.root)
+await installFromGitub('JOTSR/Dedale/install/.dedale', dedale.session.directory.root, loadInfo)
 
 loadInfo.push(`Installing default templates from https://github.com/JOTSR/dedale-templates`, { current: 3, total: 6 })
-await installFromGitub('JOTSR/dedale-templates', dedale.session.directory.templates)
+await installFromGitub('JOTSR/dedale-templates', dedale.session.directory.templates, loadInfo)
 
 const config = await readConfigFile(dedale.session.directory.config)
 
