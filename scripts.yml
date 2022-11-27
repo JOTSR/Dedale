@@ -1,0 +1,10 @@
+scripts:
+    schema:
+        desc: Generate json schemas
+        cmd:
+            pll:
+                - typescript-json-schema.ps1 .\definitions.ts Template | echo > '.\install\.dedale\templates\template.schema.json'
+                - typescript-json-schema.ps1 .\definitions.ts Config | echo > '.\install\.dedale\config.schema.json'
+    fmt:
+        desc: Format code
+        cmd: prettier -w --cache .
