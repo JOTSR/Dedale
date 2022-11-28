@@ -33,7 +33,6 @@ export function xPluginHandler() {
 // 	.action(pluginHandler)
 
 export const xPluginCommand = new Command()
-	.description('Compile script to an executable')
+	.description('Execute plugin addon command')
 	.option('-x-*, --plugin-*', 'Plugin extension')
-	//@ts-ignore bad inference
 	.action(xPluginHandler)

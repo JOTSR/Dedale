@@ -9,7 +9,7 @@ export type Init = {
 	yes: boolean
 }
 
-async function initHandler({ directory, template, config, yes = false }: Init, name: string) {
+async function initHandler({ directory, template, config, yes = false }: Init, name?: string) {
 	//Check flags
 	directory ??= Deno.cwd()
 	name = (typeof name !== 'string' || name.match(/\w+/)?.[0] !== name) ? path.basename(Deno.cwd()) : name
@@ -61,12 +61,11 @@ async function initHandler({ directory, template, config, yes = false }: Init, n
 
 export const initCommand = new Command()
 	.description('Init new project')
-	.option('-d, --directory [path:file]', 'Directory to setup')
-	.option('-t, --template [name:string]', 'Template to use',)
-	.option('-c, --config [path:string]', 'Config file to use')
+	.option('-d, --directory <path:file>', 'Directory to setup')
+	.option('-t, --template <name:string>', 'Template to use',)
+	.option('-c, --config <path:string>', 'Config file to use')
 	.option('-y, --yes', 'Skip template queries', { default: false })
 	.arguments('[directory-name:string]')
-	//@ts-ignore bad inference
 	.action(initHandler)
 
 /**

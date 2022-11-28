@@ -13,6 +13,7 @@ export type Commit = {
 		| 'revert'
 		| 'style'
 		| 'test'
+		| string
 	scope?: string
 	breakingChange: boolean
 	body?: string
@@ -50,11 +51,10 @@ message: unknown) {
 export const commitCommand = new Command()
 	.description('Commit changes')
 	.type('commit-type', new EnumType(['build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test']))
-	.option('-t, --type <commit-type>', 'Conventional commit type')
-	.option('-s, --scope [string]', 'Scope of the commit')
+	.option('-t, --type <commit-type>', 'Conventional commit type', { required: true })
+	.option('-s, --scope <string>', 'Scope of the commit')
 	.option('-k, --breaking-change', 'Includes breaking changes', { default: false })
-	.option('-b, --body [string]', 'Commit body')
-	.option('-f, --footer [string]', 'Commit footer')
+	.option('-b, --body <string>', 'Commit body')
+	.option('-f, --footer <string>', 'Commit footer')
 	.arguments('<message:string>')
-	//@ts-ignore bad inference
 	.action(commitHandler)

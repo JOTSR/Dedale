@@ -20,10 +20,9 @@ export function compileHandler({
 
 export const compileCommand = new Command()
 	.description('Compile script to an executable')
-	.option('-t, --target <string>', 'Targeted build')
-	.option('-e, --entry-point [string]', 'Entry point of the executable', { default: 'main.ts' })
-	.option('-i, --icon [file]', 'Icon to use')
-	.option('-o, --out-name [string]', 'Executable name')
+	.option('-t, --target <string>', 'Targeted build', { required: true })
+	.option('-e, --entry-point <string>', 'Entry point of the executable', { default: 'main.ts' })
+	.option('-i, --icon <file>', 'Icon to use')
+	.option('-o, --out-name <string>', 'Executable name', { required: true })
 	.option('-s, --snapshot', 'Use V8 snapshot', { default: false })
-	//@ts-ignore bad inference
 	.action(compileHandler)
