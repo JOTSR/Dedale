@@ -1,5 +1,5 @@
 import { Config, dedale, Template, TemplateActions } from './definitions.ts'
-import { ConsoleColors, ConsoleSpinner, DOMParser, path } from "./deps.ts";
+import { ConsoleColors, ConsoleSpinner, DOMParser, path } from './deps.ts'
 
 /**
  * It reads a template file, replaces all variables with their values, and returns the template
@@ -9,7 +9,7 @@ import { ConsoleColors, ConsoleSpinner, DOMParser, path } from "./deps.ts";
  */
 export async function readTemplateFile(
 	path: string,
-	context: Record<string, unknown> = {}
+	context: Record<string, unknown> = {},
 ): Promise<Template> {
 	const raw = await Deno.readTextFile(path)
 	const json = (await JSON.parse(raw)) as Template
@@ -53,8 +53,20 @@ export async function readConfigFile(path: string): Promise<Config> {
  * @param context - Record<string, unknown> = {}
  * @returns A promise that resolves to a Template object.
  */
-export async function getTemplate(value: string | undefined, context: Record<string, unknown>): Promise<Template> {
-	if (typeof value === 'string') return await readTemplateFile(path.join(dedale.session.directory.templates, value, 'dedale.template.json'), context)
+export async function getTemplate(
+	value: string | undefined,
+	context: Record<string, unknown>,
+): Promise<Template> {
+	if (typeof value === 'string') {
+		return await readTemplateFile(
+			path.join(
+				dedale.session.directory.templates,
+				value,
+				'dedale.template.json',
+			),
+			context,
+		)
+	}
 	return await getTemplate(dedale.config?.defaultTemplate, context)
 }
 
@@ -64,9 +76,13 @@ export async function getTemplate(value: string | undefined, context: Record<str
  * @param {string | Config | undefined} value - The value to be converted to a Config object.
  * @returns A promise that resolves to a Config object.
  */
-export async function getConfig(value: string | Config | undefined): Promise<Config> {
+export async function getConfig(
+	value: string | Config | undefined,
+): Promise<Config> {
 	if (typeof value === 'string') return await readConfigFile(value)
-	if (typeof value === 'undefined') return await getConfig(dedale.session.directory.config)
+	if (typeof value === 'undefined') {
+		return await getConfig(dedale.session.directory.config)
+	}
 	return value
 }
 
@@ -78,14 +94,15 @@ export async function getConfig(value: string | Config | undefined): Promise<Con
  */
 function replaceVariables<T>(
 	reference: T,
-	variables: Record<string, unknown>
+	variables: Record<string, unknown>,
 ): T {
-	if (typeof reference !== 'string' || !reference.match(/\$((\w+)\.?)+/g))
+	if (typeof reference !== 'string' || !reference.match(/\$((\w+)\.?)+/g)) {
 		return reference
+	}
 	const [variable, ...properties] = reference.slice(1).split('.')
 	return properties.reduce(
 		(previous, current) => (previous as Record<string, unknown>)[current],
-		variables[variable]
+		variables[variable],
 	) as T
 }
 
@@ -98,7 +115,7 @@ function replaceVariables<T>(
  */
 function replaceTemplateActions(
 	actions: TemplateActions,
-	variables: Record<string, unknown>
+	variables: Record<string, unknown>,
 ): TemplateActions {
 	return {
 		move: actions.move?.map(([glob1, glob2]) => [
@@ -129,19 +146,23 @@ function replaceTemplateActions(
  * @param context - The context of the template.
  * @returns An object with the same keys as the original object, but with the values replaced.
  */
-function replaceTemplateArguments({ arguments: args }: Template, context: Record<string, unknown>): Template['arguments'] {
+function replaceTemplateArguments(
+	{ arguments: args }: Template,
+	context: Record<string, unknown>,
+): Template['arguments'] {
 	if (args === undefined) return undefined
 	const entries = Object.entries(args)
 	const replaced = entries.map(([name, properties]) => {
 		const _default = replaceVariables(properties.default, context)
 		const match = properties.match.map((value) => {
-			if ('default' in value)
+			if ('default' in value) {
 				return {
 					default: replaceTemplateActions(
 						value.default,
-						context
+						context,
 					),
 				}
+			}
 			return {
 				pattern: replaceVariables(value.pattern, context),
 				then: replaceTemplateActions(value.then, context),
@@ -159,21 +180,20 @@ function replaceTemplateArguments({ arguments: args }: Template, context: Record
  * @param context - The context object that contains the variables to replace.
  * @returns A Template['use']
  */
-function replaceTemplateUse({ use }: Template, context: Record<string, unknown>): Template['use'] {
+function replaceTemplateUse(
+	{ use }: Template,
+	context: Record<string, unknown>,
+): Template['use'] {
 	if (use === undefined) return undefined
 	const name = use.name
 	const args = Object.fromEntries(
 		Object.entries(use.arguments).map(([name, value]) => [
 			name,
 			replaceVariables(value, context),
-		])
+		]),
 	)
-	const include = use.include?.map((glob) =>
-		replaceVariables(glob, context)
-	)
-	const exclude = use.exclude?.map((glob) =>
-		replaceVariables(glob, context)
-	)
+	const include = use.include?.map((glob) => replaceVariables(glob, context))
+	const exclude = use.exclude?.map((glob) => replaceVariables(glob, context))
 	const replace = use.replace?.map(([glob1, glob2]) => [
 		replaceVariables(glob1, context),
 		replaceVariables(glob2, context),
@@ -188,7 +208,10 @@ function replaceTemplateUse({ use }: Template, context: Record<string, unknown>)
  * @param context - The context object that contains the variables to replace.
  * @returns A template with the variables replaced.
  */
-function replaceTemplatePlugins({ plugins }: Template, context: Record<string, unknown>): Template['plugins'] {
+function replaceTemplatePlugins(
+	{ plugins }: Template,
+	context: Record<string, unknown>,
+): Template['plugins'] {
 	if (plugins === undefined) return undefined
 	return plugins.map((plugin) => {
 		const name = plugin.name
@@ -199,9 +222,9 @@ function replaceTemplatePlugins({ plugins }: Template, context: Record<string, u
 	})
 }
 
-/** 
+/**
  * Yield each files with their given url of a directory of a github repository
- * 
+ *
  * @param url - url of the github directory (https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${FOLDER_AND_SUBFOLDERS_PATH})
  * @example
  * const url = 'https://github.com/JOTSR/Denum/tree/main/modules'
@@ -218,27 +241,48 @@ function replaceTemplatePlugins({ plugins }: Template, context: Record<string, u
  *      fsFile.close()
  * }
  */
- export async function* githubFolderDownload(url: string): AsyncGenerator<{ url: string, relativePath: string, file: ReadableStream<Uint8Array> | null}> {
+export async function* githubFolderDownload(
+	url: string,
+): AsyncGenerator<
+	{
+		url: string
+		relativePath: string
+		file: ReadableStream<Uint8Array> | null
+	}
+> {
 	const root = await fetch(url)
 	const dom = new DOMParser().parseFromString(await root.text(), 'text/html')
-	
+
 	//@ts-ignore relative path memory trick
 	githubFolderDownload.rootLength ??= new URL(url).pathname.split('/').length
 	//@ts-ignore relative path memory trick
-	const relativePath = new URL(url).pathname.split('/').slice(githubFolderDownload.rootLength).join('/')
+	const relativePath = new URL(url).pathname.split('/').slice(
+		githubFolderDownload.rootLength,
+	).join('/')
 
-   //@ts-ignore see github link structure
-   const permalink: string | null = dom?.querySelector('a[data-permalink-href]')?.getAttribute('data-permalink-href')
-   
-   if (permalink) {
-	   yield { url, relativePath, file: (await fetch(`https://raw.githubusercontent.com${permalink}`)).body }
-   }
+	//@ts-ignore see github link structure
+	const permalink: string | null = dom?.querySelector(
+		'a[data-permalink-href]',
+	)?.getAttribute('data-permalink-href')
 
-   for (const link of dom?.getElementsByClassName('js-navigation-open Link--primary') ?? []) {
-	   const href = link.getAttribute('href')
-	   if (href === null) continue
-	   yield* githubFolderDownload(`https://github.com${href}`)
-   }
+	if (permalink) {
+		yield {
+			url,
+			relativePath,
+			file: (await fetch(`https://raw.githubusercontent.com${permalink}`))
+				.body,
+		}
+	}
+
+	for (
+		const link of dom?.getElementsByClassName(
+			'js-navigation-open Link--primary',
+		) ?? []
+	) {
+		const href = link.getAttribute('href')
+		if (href === null) continue
+		yield* githubFolderDownload(`https://github.com${href}`)
+	}
 }
 
 /**
@@ -269,19 +313,30 @@ export class LoadInfo {
 	 * @param {string} message - string - The message to display
 	 * @param [step] - { current: number, total: number }
 	 */
-	push(message: string, step?: { current: number, total: number }, sub = false): void {
+	push(
+		message: string,
+		step?: { current: number; total: number },
+		sub = false,
+	): void {
 		this.#start()
 		if (this.#spinner.text && !sub) {
-			console.log(`${ConsoleColors.bold.rgb24('Done', 0x00cc88)} ${this.#mainMessage}`)
+			console.log(
+				`${
+					ConsoleColors.bold.rgb24('Done', 0x00cc88)
+				} ${this.#mainMessage}`,
+			)
 			if (this.#subMessage) console.log('\n')
 		}
 
 		if (sub) {
-			this.#subMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
-		}
-		else {
+			this.#subMessage = (step === undefined)
+				? message
+				: `${message} [${step.current}/${step.total}]`
+		} else {
 			this.#subMessage = undefined
-			this.#mainMessage = (step === undefined) ? message : `${message} [${step.current}/${step.total}]`
+			this.#mainMessage = (step === undefined)
+				? message
+				: `${message} [${step.current}/${step.total}]`
 		}
 		this.#spinner.text = [this.#mainMessage, this.#subMessage].join('\n\t')
 	}

@@ -1,439 +1,438 @@
 {
-    "$schema": "http://json-schema.org/draft-07/schema#",
-    "definitions": {
-        "JSONTypes": {
-            "anyOf": [
-                {
-                    "items": {
-                        "$ref": "#/definitions/JSONTypes"
-                    },
-                    "type": "array"
-                },
-                {
-                    "$ref": "#/definitions/Record<string,_JSONTypes>"
-                },
-                {
-                    "items": {
-                        "$ref": "#/definitions/Record<string,_JSONTypes>"
-                    },
-                    "type": "array"
-                },
-                {
-                    "type": [
-                        "string",
-                        "number",
-                        "boolean"
-                    ]
-                }
-            ]
-        },
-        "Record<string,_JSONTypes>": {
-            "type": "object"
-        },
-        "Record<string,string>": {
-            "type": "object"
-        },
-        "Record<string,{path:string;activated:boolean;}>": {
-            "type": "object"
-        },
-        "RegExp": {
-            "properties": {
-                "global": {
-                    "type": "boolean"
-                },
-                "ignoreCase": {
-                    "type": "boolean"
-                },
-                "lastIndex": {
-                    "type": "number"
-                },
-                "multiline": {
-                    "type": "boolean"
-                },
-                "source": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "Template": {
-            "description": "Template for directory initialisation",
-            "properties": {
-                "arguments": {
-                    "additionalProperties": {
-                        "properties": {
-                            "accepts": {
-                                "anyOf": [
-                                    {
-                                        "$ref": "#/definitions/RegExp"
-                                    },
-                                    {
-                                        "items": {
-                                            "$ref": "#/definitions/JSONTypes"
-                                        },
-                                        "type": "array"
-                                    },
-                                    {
-                                        "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                    },
-                                    {
-                                        "items": {
-                                            "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                        },
-                                        "type": "array"
-                                    },
-                                    {
-                                        "type": [
-                                            "string",
-                                            "number",
-                                            "boolean"
-                                        ]
-                                    }
-                                ],
-                                "description": "Value to accept\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)"
-                            },
-                            "default": {
-                                "$ref": "#/definitions/JSONTypes",
-                                "description": "Default value of the argument\nIf not set argument is mandatory\nVariables are accessible via $\n\nCan be any valid json type"
-                            },
-                            "description": {
-                                "description": "Description of the argument",
-                                "type": "string"
-                            },
-                            "match": {
-                                "anyOf": [
-                                    {
-                                        "additionalItems": {
-                                            "properties": {
-                                                "default": {
-                                                    "$ref": "#/definitions/TemplateActions",
-                                                    "description": "Actions are executed in order"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "items": [
-                                            {
-                                                "properties": {
-                                                    "pattern": {
-                                                        "anyOf": [
-                                                            {
-                                                                "$ref": "#/definitions/RegExp"
-                                                            },
-                                                            {
-                                                                "items": {
-                                                                    "$ref": "#/definitions/JSONTypes"
-                                                                },
-                                                                "type": "array"
-                                                            },
-                                                            {
-                                                                "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                                            },
-                                                            {
-                                                                "items": {
-                                                                    "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                                                },
-                                                                "type": "array"
-                                                            },
-                                                            {
-                                                                "type": [
-                                                                    "string",
-                                                                    "number",
-                                                                    "boolean"
-                                                                ]
-                                                            }
-                                                        ],
-                                                        "description": "Pattern of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)\nVariables are accessible via $"
-                                                    },
-                                                    "then": {
-                                                        "$ref": "#/definitions/TemplateActions",
-                                                        "description": "Actions are executed in order"
-                                                    }
-                                                },
-                                                "type": "object"
-                                            }
-                                        ],
-                                        "minItems": 1,
-                                        "type": "array"
-                                    },
-                                    {
-                                        "items": {
-                                            "properties": {
-                                                "pattern": {
-                                                    "anyOf": [
-                                                        {
-                                                            "$ref": "#/definitions/RegExp"
-                                                        },
-                                                        {
-                                                            "items": {
-                                                                "$ref": "#/definitions/JSONTypes"
-                                                            },
-                                                            "type": "array"
-                                                        },
-                                                        {
-                                                            "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                                        },
-                                                        {
-                                                            "items": {
-                                                                "$ref": "#/definitions/Record<string,_JSONTypes>"
-                                                            },
-                                                            "type": "array"
-                                                        },
-                                                        {
-                                                            "type": [
-                                                                "string",
-                                                                "number",
-                                                                "boolean"
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "description": "Pattern of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)\nVariables are accessible via $"
-                                                },
-                                                "then": {
-                                                    "$ref": "#/definitions/TemplateActions",
-                                                    "description": "Actions are executed in order"
-                                                }
-                                            },
-                                            "type": "object"
-                                        },
-                                        "type": "array"
-                                    }
-                                ],
-                                "description": "Actions to execute when argument match a specific value\nPattern are checked in order"
-                            },
-                            "type": {
-                                "$ref": "#/definitions/JSONTypes",
-                                "description": "Type of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "description": "CLI arguments required by the template on directory init",
-                    "type": "object"
-                },
-                "name": {
-                    "description": "Name of the template",
-                    "type": "string"
-                },
-                "plugins": {
-                    "description": "Plugins to use",
-                    "items": {
-                        "properties": {
-                            "arguments": {
-                                "description": "Arguments of the plugin\nCan be any valid json type\nVariables are accessible via $",
-                                "items": {
-                                    "$ref": "#/definitions/JSONTypes"
-                                },
-                                "type": "array"
-                            },
-                            "name": {
-                                "description": "Plugin name",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "type": "array"
-                },
-                "use": {
-                    "description": "Template which is based on",
-                    "properties": {
-                        "arguments": {
-                            "additionalProperties": {
-                                "type": "string"
-                            },
-                            "description": "Arguments required by the used template\nValue can by passed or arguments can be mapped\nVariables are accessible via $",
-                            "type": "object"
-                        },
-                        "exclude": {
-                            "description": "Files to exclude from the source template\nList must be an array of glob expressions",
-                            "examples": [
-                                "*json"
-                            ],
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        "include": {
-                            "description": "Files to include from the source template\nList must be an array of glob expressions",
-                            "examples": [
-                                ".vscode",
-                                "src/*"
-                            ],
-                            "items": {
-                                "type": "string"
-                            },
-                            "type": "array"
-                        },
-                        "name": {
-                            "description": "Name of the used template",
-                            "type": "string"
-                        },
-                        "replace": {
-                            "description": "Files to replace from the source template\nList must be an array of tuple of [glob, glob]",
-                            "examples": [
-                                [
-                                    "deno.json*",
-                                    "deno.jsonc"
-                                ]
-                            ],
-                            "items": {
-                                "items": [
-                                    {
-                                        "type": "string"
-                                    },
-                                    {
-                                        "type": "string"
-                                    }
-                                ],
-                                "maxItems": 2,
-                                "minItems": 2,
-                                "type": "array"
-                            },
-                            "type": "array"
-                        }
-                    },
-                    "type": "object"
-                }
-            },
-            "type": "object"
-        },
-        "TemplateActions": {
-            "description": "Actions executed by the template\nActions are executed in the order used in the jscon file",
-            "properties": {
-                "create": {
-                    "description": "File or directory to create (like mkdir -d glob)\nList be an array of glob explressions",
-                    "examples": [
-                        "LICENCE"
-                    ],
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                },
-                "move": {
-                    "description": "File or directory to move/rename (like mv -f glob1 glob2)\nList be an array of tuple of [glob, glob]",
-                    "examples": [
-                        [
-                            "deno.unstable.json",
-                            "deno.json"
-                        ]
-                    ],
-                    "items": {
-                        "items": [
-                            {
-                                "type": "string"
-                            },
-                            {
-                                "type": "string"
-                            }
-                        ],
-                        "maxItems": 2,
-                        "minItems": 2,
-                        "type": "array"
-                    },
-                    "type": "array"
-                },
-                "plugins": {
-                    "description": "Plugins to use",
-                    "items": {
-                        "properties": {
-                            "arguments": {
-                                "description": "Arguments of the plugin\nCan be any valid json type\nVariables are accessible via $",
-                                "items": {
-                                    "$ref": "#/definitions/JSONTypes"
-                                },
-                                "type": "array"
-                            },
-                            "name": {
-                                "description": "Plugin name",
-                                "type": "string"
-                            }
-                        },
-                        "type": "object"
-                    },
-                    "type": "array"
-                },
-                "remove": {
-                    "description": "File or directory to remove (like rm -rf glob1 glob2)\nList be an array of glob expressions",
-                    "examples": [
-                        "deno.stable.json"
-                    ],
-                    "items": {
-                        "type": "string"
-                    },
-                    "type": "array"
-                }
-            },
-            "type": "object"
-        }
-    },
-    "description": "D├®dale configuration interface",
-    "properties": {
-        "autoUpdate": {
-            "description": "Automatic update of deno\nSet defaultVersion to the latest",
-            "type": "boolean"
-        },
-        "autoUpgrade": {
-            "description": "Automatic upgrade of d├®dale",
-            "type": "boolean"
-        },
-        "defaultProvider": {
-            "description": "Default modules provider url",
-            "type": "string"
-        },
-        "defaultTemplate": {
-            "anyOf": [
-                {
-                    "$ref": "#/definitions/Template"
-                },
-                {
-                    "type": "string"
-                }
-            ],
-            "description": "Default template name of definition"
-        },
-        "defaultVersion": {
-            "description": "Default deno version used\nSet version as alias in deno install path",
-            "type": "string"
-        },
-        "notifyUpdate": {
-            "description": "Notify newer deno version when cli is used",
-            "type": "boolean"
-        },
-        "notifyUpgrade": {
-            "description": "Notify newer d├®dale version when cli is used",
-            "type": "boolean"
-        },
-        "plugins": {
-            "$ref": "#/definitions/Record<string,{path:string;activated:boolean;}>",
-            "description": "Plugins installed and activation status\nAutomatically generated\nDefault state of plugins is activated"
-        },
-        "providers": {
-            "$ref": "#/definitions/Record<string,string>",
-            "description": "List of providers"
-        },
-        "scriptRunner": {
-            "description": "Script runner used\nDefault set to deno task",
-            "properties": {
-                "command": {
-                    "type": "string"
-                },
-                "help": {
-                    "type": "string"
-                },
-                "path": {
-                    "type": "string"
-                }
-            },
-            "type": "object"
-        },
-        "versions": {
-            "$ref": "#/definitions/Record<string,string>",
-            "description": "Download deno versions\nAuto generated"
-        }
-    },
-    "type": "object"
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"JSONTypes": {
+			"anyOf": [
+				{
+					"items": {
+						"$ref": "#/definitions/JSONTypes"
+					},
+					"type": "array"
+				},
+				{
+					"$ref": "#/definitions/Record<string,_JSONTypes>"
+				},
+				{
+					"items": {
+						"$ref": "#/definitions/Record<string,_JSONTypes>"
+					},
+					"type": "array"
+				},
+				{
+					"type": [
+						"string",
+						"number",
+						"boolean"
+					]
+				}
+			]
+		},
+		"Record<string,_JSONTypes>": {
+			"type": "object"
+		},
+		"Record<string,string>": {
+			"type": "object"
+		},
+		"Record<string,{path:string;activated:boolean;}>": {
+			"type": "object"
+		},
+		"RegExp": {
+			"properties": {
+				"global": {
+					"type": "boolean"
+				},
+				"ignoreCase": {
+					"type": "boolean"
+				},
+				"lastIndex": {
+					"type": "number"
+				},
+				"multiline": {
+					"type": "boolean"
+				},
+				"source": {
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"Template": {
+			"description": "Template for directory initialisation",
+			"properties": {
+				"arguments": {
+					"additionalProperties": {
+						"properties": {
+							"accepts": {
+								"anyOf": [
+									{
+										"$ref": "#/definitions/RegExp"
+									},
+									{
+										"items": {
+											"$ref": "#/definitions/JSONTypes"
+										},
+										"type": "array"
+									},
+									{
+										"$ref": "#/definitions/Record<string,_JSONTypes>"
+									},
+									{
+										"items": {
+											"$ref": "#/definitions/Record<string,_JSONTypes>"
+										},
+										"type": "array"
+									},
+									{
+										"type": [
+											"string",
+											"number",
+											"boolean"
+										]
+									}
+								],
+								"description": "Value to accept\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)"
+							},
+							"default": {
+								"$ref": "#/definitions/JSONTypes",
+								"description": "Default value of the argument\nIf not set argument is mandatory\nVariables are accessible via $\n\nCan be any valid json type"
+							},
+							"description": {
+								"description": "Description of the argument",
+								"type": "string"
+							},
+							"match": {
+								"anyOf": [
+									{
+										"additionalItems": {
+											"properties": {
+												"default": {
+													"$ref": "#/definitions/TemplateActions",
+													"description": "Actions are executed in order"
+												}
+											},
+											"type": "object"
+										},
+										"items": [
+											{
+												"properties": {
+													"pattern": {
+														"anyOf": [
+															{
+																"$ref": "#/definitions/RegExp"
+															},
+															{
+																"items": {
+																	"$ref": "#/definitions/JSONTypes"
+																},
+																"type": "array"
+															},
+															{
+																"$ref": "#/definitions/Record<string,_JSONTypes>"
+															},
+															{
+																"items": {
+																	"$ref": "#/definitions/Record<string,_JSONTypes>"
+																},
+																"type": "array"
+															},
+															{
+																"type": [
+																	"string",
+																	"number",
+																	"boolean"
+																]
+															}
+														],
+														"description": "Pattern of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)\nVariables are accessible via $"
+													},
+													"then": {
+														"$ref": "#/definitions/TemplateActions",
+														"description": "Actions are executed in order"
+													}
+												},
+												"type": "object"
+											}
+										],
+										"minItems": 1,
+										"type": "array"
+									},
+									{
+										"items": {
+											"properties": {
+												"pattern": {
+													"anyOf": [
+														{
+															"$ref": "#/definitions/RegExp"
+														},
+														{
+															"items": {
+																"$ref": "#/definitions/JSONTypes"
+															},
+															"type": "array"
+														},
+														{
+															"$ref": "#/definitions/Record<string,_JSONTypes>"
+														},
+														{
+															"items": {
+																"$ref": "#/definitions/Record<string,_JSONTypes>"
+															},
+															"type": "array"
+														},
+														{
+															"type": [
+																"string",
+																"number",
+																"boolean"
+															]
+														}
+													],
+													"description": "Pattern of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)\nVariables are accessible via $"
+												},
+												"then": {
+													"$ref": "#/definitions/TemplateActions",
+													"description": "Actions are executed in order"
+												}
+											},
+											"type": "object"
+										},
+										"type": "array"
+									}
+								],
+								"description": "Actions to execute when argument match a specific value\nPattern are checked in order"
+							},
+							"type": {
+								"$ref": "#/definitions/JSONTypes",
+								"description": "Type of the argument\nCan be any valid json type\nString can be a regex pattern (eg: ([A-Z])\\w+)"
+							}
+						},
+						"type": "object"
+					},
+					"description": "CLI arguments required by the template on directory init",
+					"type": "object"
+				},
+				"name": {
+					"description": "Name of the template",
+					"type": "string"
+				},
+				"plugins": {
+					"description": "Plugins to use",
+					"items": {
+						"properties": {
+							"arguments": {
+								"description": "Arguments of the plugin\nCan be any valid json type\nVariables are accessible via $",
+								"items": {
+									"$ref": "#/definitions/JSONTypes"
+								},
+								"type": "array"
+							},
+							"name": {
+								"description": "Plugin name",
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"use": {
+					"description": "Template which is based on",
+					"properties": {
+						"arguments": {
+							"additionalProperties": {
+								"type": "string"
+							},
+							"description": "Arguments required by the used template\nValue can by passed or arguments can be mapped\nVariables are accessible via $",
+							"type": "object"
+						},
+						"exclude": {
+							"description": "Files to exclude from the source template\nList must be an array of glob expressions",
+							"examples": [
+								"*json"
+							],
+							"items": {
+								"type": "string"
+							},
+							"type": "array"
+						},
+						"include": {
+							"description": "Files to include from the source template\nList must be an array of glob expressions",
+							"examples": [
+								".vscode",
+								"src/*"
+							],
+							"items": {
+								"type": "string"
+							},
+							"type": "array"
+						},
+						"name": {
+							"description": "Name of the used template",
+							"type": "string"
+						},
+						"replace": {
+							"description": "Files to replace from the source template\nList must be an array of tuple of [glob, glob]",
+							"examples": [
+								[
+									"deno.json*",
+									"deno.jsonc"
+								]
+							],
+							"items": {
+								"items": [
+									{
+										"type": "string"
+									},
+									{
+										"type": "string"
+									}
+								],
+								"maxItems": 2,
+								"minItems": 2,
+								"type": "array"
+							},
+							"type": "array"
+						}
+					},
+					"type": "object"
+				}
+			},
+			"type": "object"
+		},
+		"TemplateActions": {
+			"description": "Actions executed by the template\nActions are executed in the order used in the jscon file",
+			"properties": {
+				"create": {
+					"description": "File or directory to create (like mkdir -d glob)\nList be an array of glob explressions",
+					"examples": [
+						"LICENCE"
+					],
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				},
+				"move": {
+					"description": "File or directory to move/rename (like mv -f glob1 glob2)\nList be an array of tuple of [glob, glob]",
+					"examples": [
+						[
+							"deno.unstable.json",
+							"deno.json"
+						]
+					],
+					"items": {
+						"items": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "string"
+							}
+						],
+						"maxItems": 2,
+						"minItems": 2,
+						"type": "array"
+					},
+					"type": "array"
+				},
+				"plugins": {
+					"description": "Plugins to use",
+					"items": {
+						"properties": {
+							"arguments": {
+								"description": "Arguments of the plugin\nCan be any valid json type\nVariables are accessible via $",
+								"items": {
+									"$ref": "#/definitions/JSONTypes"
+								},
+								"type": "array"
+							},
+							"name": {
+								"description": "Plugin name",
+								"type": "string"
+							}
+						},
+						"type": "object"
+					},
+					"type": "array"
+				},
+				"remove": {
+					"description": "File or directory to remove (like rm -rf glob1 glob2)\nList be an array of glob expressions",
+					"examples": [
+						"deno.stable.json"
+					],
+					"items": {
+						"type": "string"
+					},
+					"type": "array"
+				}
+			},
+			"type": "object"
+		}
+	},
+	"description": "D├®dale configuration interface",
+	"properties": {
+		"autoUpdate": {
+			"description": "Automatic update of deno\nSet defaultVersion to the latest",
+			"type": "boolean"
+		},
+		"autoUpgrade": {
+			"description": "Automatic upgrade of d├®dale",
+			"type": "boolean"
+		},
+		"defaultProvider": {
+			"description": "Default modules provider url",
+			"type": "string"
+		},
+		"defaultTemplate": {
+			"anyOf": [
+				{
+					"$ref": "#/definitions/Template"
+				},
+				{
+					"type": "string"
+				}
+			],
+			"description": "Default template name of definition"
+		},
+		"defaultVersion": {
+			"description": "Default deno version used\nSet version as alias in deno install path",
+			"type": "string"
+		},
+		"notifyUpdate": {
+			"description": "Notify newer deno version when cli is used",
+			"type": "boolean"
+		},
+		"notifyUpgrade": {
+			"description": "Notify newer d├®dale version when cli is used",
+			"type": "boolean"
+		},
+		"plugins": {
+			"$ref": "#/definitions/Record<string,{path:string;activated:boolean;}>",
+			"description": "Plugins installed and activation status\nAutomatically generated\nDefault state of plugins is activated"
+		},
+		"providers": {
+			"$ref": "#/definitions/Record<string,string>",
+			"description": "List of providers"
+		},
+		"scriptRunner": {
+			"description": "Script runner used\nDefault set to deno task",
+			"properties": {
+				"command": {
+					"type": "string"
+				},
+				"help": {
+					"type": "string"
+				},
+				"path": {
+					"type": "string"
+				}
+			},
+			"type": "object"
+		},
+		"versions": {
+			"$ref": "#/definitions/Record<string,string>",
+			"description": "Download deno versions\nAuto generated"
+		}
+	},
+	"type": "object"
 }
-

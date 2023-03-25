@@ -1,11 +1,14 @@
-import { Command } from "../deps.ts";
+import { Command } from '../deps.ts'
 
 export type Uninstall = {
 	global: boolean
 	dev?: boolean
 }
 
-export function uninstallHandler({ global, dev }: Uninstall, packageName: string) {
+export function uninstallHandler(
+	{ global, dev }: Uninstall,
+	packageName: string,
+) {
 	throw new Error('Not implemented')
 }
 

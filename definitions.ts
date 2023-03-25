@@ -1,5 +1,5 @@
-import { Init } from "./commands/init.ts";
-import { dir, path, username } from "./deps.ts";
+import { Init } from './commands/init.ts'
+import { dir, path, username } from './deps.ts'
 
 /**
  * Dédale configuration interface
@@ -200,35 +200,12 @@ export interface Template {
 			 */
 			match:
 				| [
-						...{
-							/**
-							 * Pattern of the argument
-							 * Can be any valid json type
-							 * String can be a regex pattern (eg: ([A-Z])\w+)
-							 * Variables are accessible via $
-							 *
-							 * @item { "type": "string", "enum": [ "string", "boolean", "number", "array", "object" ] }
-							 */
-							pattern: JSONTypes | RegExp
-							/**
-							 * Actions are executed in order
-							 */
-							then: TemplateActions
-						}[],
-						{
-							/**
-							 * Actions are executed in order
-							 */
-							default: TemplateActions
-						}
-				  ]
-				| {
+					...{
 						/**
 						 * Pattern of the argument
 						 * Can be any valid json type
 						 * String can be a regex pattern (eg: ([A-Z])\w+)
 						 * Variables are accessible via $
-						 *
 						 *
 						 * @item { "type": "string", "enum": [ "string", "boolean", "number", "array", "object" ] }
 						 */
@@ -237,7 +214,29 @@ export interface Template {
 						 * Actions are executed in order
 						 */
 						then: TemplateActions
-				  }[]
+					}[],
+					{
+						/**
+						 * Actions are executed in order
+						 */
+						default: TemplateActions
+					},
+				]
+				| {
+					/**
+					 * Pattern of the argument
+					 * Can be any valid json type
+					 * String can be a regex pattern (eg: ([A-Z])\w+)
+					 * Variables are accessible via $
+					 *
+					 * @item { "type": "string", "enum": [ "string", "boolean", "number", "array", "object" ] }
+					 */
+					pattern: JSONTypes | RegExp
+					/**
+					 * Actions are executed in order
+					 */
+					then: TemplateActions
+				}[]
 		}
 	}
 	/**
@@ -255,7 +254,6 @@ export interface Template {
 		 * Arguments required by the used template
 		 * Value can by passed or arguments can be mapped
 		 * Variables are accessible via $
-		 *
 		 *
 		 * @example { "description": "$template.description", "unstable": true }
 		 */
@@ -298,25 +296,25 @@ export interface Template {
 */
 
 export interface Dedale {
-    config?: Config
-    session: {
-        username: string
-        home: string
-        build: typeof Deno.build
+	config?: Config
+	session: {
+		username: string
+		home: string
+		build: typeof Deno.build
 		directory: {
 			root: string
 			templates: string
 			config: string
 		}
-    }
-    project: {
-        name?: string
-        path?: string
-    }
-    flags: {
-        init?: Init
-    }
-    template?: Template
+	}
+	project: {
+		name?: string
+		path?: string
+	}
+	flags: {
+		init?: Init
+	}
+	template?: Template
 }
 
 const userDirectory = ((_) => {
@@ -329,15 +327,15 @@ export const dedale: Dedale = {
 	session: {
 		username: (await username()) ?? '',
 		home: userDirectory,
-        build: Deno.build,
+		build: Deno.build,
 		directory: {
 			root: path.join(userDirectory, '.dedale'),
 			templates: path.join(userDirectory, '.dedale', 'templates'),
 			config: path.join(userDirectory, '.dedale', '.dedale.json'),
-		}
+		},
 	},
-    project: {},
-    flags: {},
+	project: {},
+	flags: {},
 }
 
 export const configPath = await (async () => {
@@ -353,12 +351,12 @@ export const configPath = await (async () => {
 export type Tree = {
 	[key: string]:
 		| {
-				file: string
-		  }
+			file: string
+		}
 		| {
-				dir: string
-				tree?: Tree
-		  }
+			dir: string
+			tree?: Tree
+		}
 }
 
 export const tree: Tree = {

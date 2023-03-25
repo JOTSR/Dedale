@@ -1,4 +1,4 @@
-import { Command } from "../deps.ts";
+import { Command } from '../deps.ts'
 
 export function formatHandler() {
 	throw new Error('Not implemented')

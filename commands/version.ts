@@ -1,4 +1,4 @@
-import { Command } from "../deps.ts";
+import { Command } from '../deps.ts'
 
 export type Version = {
 	list?: boolean
@@ -6,7 +6,10 @@ export type Version = {
 	uninstall?: string
 }
 
-export function versionHandler({ list, uninstall, install }: Version, versionName: string) {
+export function versionHandler(
+	{ list, uninstall, install }: Version,
+	versionName: string,
+) {
 	throw new Error('Not implemented')
 }
 

@@ -1,29 +1,29 @@
 {
-    "$schema": "./.dedale.schema.json",
-    "autoUpdate": true,
-    "notifyUpdate": true,
-    "autoUpgrade": true,
-    "notifyUpgrade": true,
-    "defaultProvider": "https://deno.land/x",
-    "defaultTemplate": "vscode-mod",
-    "plugins": {
-        "readme-generator": {
-            "path": "https://github.com/dedale/plugins/std/readme-generator/mod.ts",
-            "activated": true
-        },
-        "licence-generator": {
-            "path": "https://github.com/dedale/plugins/std/licence-generator/mod.ts",
-            "activated": true
-        }
-    },
-    "providers": {
-        "deno-std": "https://deno.land/std",
-        "deno-x": "https://deno.land/x",
-        "esm": "https://esm.sh"
-    },
-    "scriptRunner": {
-        "command": "task",
-        "help": "--help",
-        "path": "deno"
-    }
+	"$schema": "./.dedale.schema.json",
+	"autoUpdate": true,
+	"notifyUpdate": true,
+	"autoUpgrade": true,
+	"notifyUpgrade": true,
+	"defaultProvider": "https://deno.land/x",
+	"defaultTemplate": "vscode-mod",
+	"plugins": {
+		"readme-generator": {
+			"path": "https://github.com/dedale/plugins/std/readme-generator/mod.ts",
+			"activated": true
+		},
+		"licence-generator": {
+			"path": "https://github.com/dedale/plugins/std/licence-generator/mod.ts",
+			"activated": true
+		}
+	},
+	"providers": {
+		"deno-std": "https://deno.land/std",
+		"deno-x": "https://deno.land/x",
+		"esm": "https://esm.sh"
+	},
+	"scriptRunner": {
+		"command": "task",
+		"help": "--help",
+		"path": "deno"
+	}
 }

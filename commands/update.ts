@@ -1,8 +1,8 @@
-import { Command } from "../deps.ts";
+import { Command } from '../deps.ts'
 
 export type Update = {
 	global?: boolean
-	dev?: boolean	
+	dev?: boolean
 }
 
 export function updateHandler({ global, dev }: Update, packageName: string) {
