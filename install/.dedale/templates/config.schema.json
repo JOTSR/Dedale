@@ -1,0 +1,129 @@
+{
+	"$ref": "#/definitions/Config",
+	"$schema": "http://json-schema.org/draft-07/schema#",
+	"definitions": {
+		"Config": {
+			"additionalProperties": false,
+			"description": "Dédale configuration interface",
+			"properties": {
+				"autoUpdate": {
+					"description": "Automatic update of deno Set defaultVersion to the latest",
+					"type": "boolean"
+				},
+				"autoUpgrade": {
+					"description": "Automatic upgrade of dédale",
+					"type": "boolean"
+				},
+				"defaultProvider": {
+					"description": "Default modules provider url",
+					"examples": [
+						"https://deno.land/x"
+					],
+					"type": "string"
+				},
+				"defaultTemplate": {
+					"description": "Default template name of definition",
+					"examples": [
+						"vscode-mod"
+					],
+					"type": "string"
+				},
+				"defaultVersion": {
+					"description": "Default deno version used Set version as alias in deno install path",
+					"type": "string"
+				},
+				"notifyUpdate": {
+					"description": "Notify newer deno version when cli is used",
+					"type": "boolean"
+				},
+				"notifyUpgrade": {
+					"description": "Notify newer dédale version when cli is used",
+					"type": "boolean"
+				},
+				"plugins": {
+					"additionalProperties": {
+						"additionalProperties": false,
+						"properties": {
+							"activated": {
+								"type": "boolean"
+							},
+							"path": {
+								"type": "string"
+							}
+						},
+						"required": [
+							"path",
+							"activated"
+						],
+						"type": "object"
+					},
+					"description": "Plugins installed and activation status Automatically generated Default state of plugins is activated",
+					"type": "object"
+				},
+				"providers": {
+					"additionalProperties": {
+						"type": "string"
+					},
+					"description": "List of providers",
+					"examples": [
+						{
+							"deno-std": "https://deno.land/std",
+							"deno-x": "https://deno.land/x",
+							"esm": "https://esm.sh"
+						}
+					],
+					"type": "object"
+				},
+				"scriptRunner": {
+					"additionalProperties": false,
+					"description": "Script runner used Default set to deno task",
+					"examples": [
+						{
+							"command": "run",
+							"help": "-h",
+							"path": "vr"
+						}
+					],
+					"properties": {
+						"command": {
+							"type": "string"
+						},
+						"help": {
+							"type": "string"
+						},
+						"path": {
+							"type": "string"
+						}
+					},
+					"required": [
+						"path",
+						"command",
+						"help"
+					],
+					"type": "object"
+				},
+				"versions": {
+					"additionalProperties": {
+						"type": "string"
+					},
+					"description": "Download deno versions Auto generated",
+					"type": "object"
+				}
+			},
+			"required": [
+				"defaultTemplate",
+				"defaultProvider",
+				"providers",
+				"defaultVersion",
+				"versions",
+				"autoUpdate",
+				"notifyUpdate",
+				"plugins",
+				"scriptRunner",
+				"autoUpgrade",
+				"notifyUpgrade"
+			],
+			"type": "object"
+		}
+	}
+}
