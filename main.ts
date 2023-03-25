@@ -40,6 +40,7 @@ await new Command()
 	.command('test', testCommand)
 	.command('uninstall', uninstallCommand)
 	.command('update', updateCommand)
+	//@ts-ignore fix type error
 	.command('upgrade', upgradeCommand)
 	.command('version', versionCommand)
 	.parse(Deno.args)

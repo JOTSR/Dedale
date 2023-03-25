@@ -3,6 +3,10 @@ export {
 	Command,
 	EnumType,
 } from 'https://deno.land/x/cliffy@v0.25.4/mod.ts'
+export {
+	DenoLandProvider,
+	UpgradeCommand,
+} from 'https://deno.land/x/cliffy@v0.25.7/command/upgrade/mod.ts'
 export * as path from 'https://deno.land/std@0.161.0/path/mod.ts'
 export * as fs from 'https://deno.land/std@0.161.0/fs/mod.ts'
 export { default as dir } from 'https://deno.land/x/dir@1.5.1/mod.ts'
