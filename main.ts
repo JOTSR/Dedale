@@ -4,6 +4,7 @@ import { compileCommand } from './commands/compile.ts'
 import { versionCommand } from './commands/version.ts'
 import { initCommand } from './commands/init.ts'
 import { auditCommand } from './commands/audit.ts'
+import { assetCommand } from './commands/asset.ts'
 import { installCommand } from './commands/install.ts'
 import { publishCommand } from './commands/publish.ts'
 import { searchCommand } from './commands/search.ts'
@@ -21,6 +22,7 @@ await new Command()
 	.name('dedale')
 	.version('0.1.0')
 	.description('Project manager for Deno')
+	.command('asset', assetCommand)
 	.command('audit', auditCommand)
 	.command('commit', commitCommand)
 	.command('compile', compileCommand)
