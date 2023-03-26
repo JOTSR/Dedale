@@ -20,6 +20,7 @@ export interface Config {
 	 * @example "https://deno.land/x"
 	 */
 	defaultProvider: string
+
 	/**
 	 * List of providers
 	 *
@@ -27,24 +28,12 @@ export interface Config {
 	 */
 	providers: Record<string, string>
 
-	//Deno.versions
-	/**
-	 * Default deno version used
-	 * Set version as alias in deno install path
-	 */
-	defaultVersion: string
-	/**
-	 * Download deno versions
-	 * Auto generated
-	 *
-	 * @example { "1.18.0": path_to_bin }
-	 */
-	versions: Record<string, string>
 	/**
 	 * Automatic update of deno
 	 * Set defaultVersion to the latest
 	 */
 	autoUpdate: boolean
+
 	/**
 	 * Notify newer deno version when cli is used
 	 */
@@ -60,24 +49,12 @@ export interface Config {
 	 */
 	plugins: Record<string, { path: string; activated: boolean }>
 
-	//Runner
-	/**
-	 * Script runner used
-	 * Default set to deno task
-	 *
-	 * @example { "path": "vr", "command": "run", "help": "-h" }
-	 */
-	scriptRunner: {
-		path: string
-		command: string
-		help: string
-	}
-
 	//Upgrade
 	/**
 	 * Automatic upgrade of dédale
 	 */
 	autoUpgrade: boolean
+	
 	/**
 	 * Notify newer dédale version when cli is used
 	 */
