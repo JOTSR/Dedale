@@ -117,7 +117,7 @@ export async function searchHandler(
 export const searchCommand = new Command()
 	.description('Search a package')
 	.option(
-		'-p, --provider <url:string>',
+		'-p, --provider <name:string>',
 		'Provider to use (ex: deno.land/x)',
 	)
 	.arguments('<name:string>')
