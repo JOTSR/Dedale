@@ -54,7 +54,7 @@ export interface Config {
 	 * Automatic upgrade of dédale
 	 */
 	autoUpgrade: boolean
-	
+
 	/**
 	 * Notify newer dédale version when cli is used
 	 */
@@ -351,4 +351,10 @@ export const tree: Tree = {
 			},
 		},
 	},
+}
+
+export type ImportMapEntry = {
+	name: string
+	kind: 'dev' | 'asset' | null
+	path: string
 }

@@ -1,5 +1,11 @@
-import { Config, dedale, Template, TemplateActions } from './definitions.ts'
-import { ConsoleColors, ConsoleSpinner, DOMParser, path } from './deps.ts'
+import {
+	Config,
+	dedale,
+	ImportMapEntry,
+	Template,
+	TemplateActions,
+} from './definitions.ts'
+import { ConsoleColors, ConsoleSpinner, DOMParser, fs, path } from './deps.ts'
 
 /**
  * It reads a template file, replaces all variables with their values, and returns the template
@@ -36,12 +42,9 @@ export async function readConfigFile(path: string): Promise<Config> {
 		defaultTemplate: json.defaultTemplate,
 		defaultProvider: json.defaultProvider,
 		providers: json.providers,
-		defaultVersion: json.defaultVersion,
-		versions: json.versions,
 		autoUpdate: json.autoUpdate,
 		notifyUpdate: json.notifyUpdate,
 		plugins: json.plugins,
-		scriptRunner: json.scriptRunner,
 		autoUpgrade: json.autoUpgrade,
 		notifyUpgrade: json.notifyUpgrade,
 	} as const
@@ -255,8 +258,8 @@ export async function* githubFolderDownload(
 
 	//@ts-ignore relative path memory trick
 	githubFolderDownload.rootLength ??= new URL(url).pathname.split('/').length
-	//@ts-ignore relative path memory trick
 	const relativePath = new URL(url).pathname.split('/').slice(
+		//@ts-ignore relative path memory trick
 		githubFolderDownload.rootLength,
 	).join('/')
 
@@ -346,5 +349,111 @@ export class LoadInfo {
 	 */
 	clear() {
 		this.#spinner.stop()
+	}
+}
+
+export class ImportMap {
+	static #path: string
+	static get path() {
+		if (this.#path) return this.#path
+		const root = dedale.project.path
+		if (root === undefined) {
+			throw new Error('unknown project path')
+		}
+		for (
+			const file of fs.expandGlobSync(
+				path.join(root, 'import[-_]map.json'),
+			)
+		) {
+			if (file.isFile) {
+				this.#path = file.path
+				break
+			} else {
+				const importMap = { imports: {}, scopes: {} }
+				Deno.writeTextFileSync(
+					'import_map.json',
+					JSON.stringify(importMap, null, 2),
+				)
+				this.#path = 'import_map.json'
+				break
+			}
+		}
+		return this.#path
+	}
+	static async get(): Promise<ImportMapEntry[]> {
+		const raw = await Deno.readTextFile(this.path)
+		const json = JSON.parse(raw) as {
+			imports: Record<string, string>
+			scopes: Record<string, Record<string, string>>
+		}
+		const entries = Object.entries(json.imports).map(([name, path]) => ({
+			name,
+			path,
+			kind: this.#entryKind(name),
+		}))
+		return entries
+	}
+
+	static async set(...entries: ImportMapEntry[]): Promise<void> {
+		const importMap = await this.get()
+		for (const entry of entries) {
+			if (importMap.map(({ path }) => path).includes(entry.path)) {
+				throw new Error(`duplicated path ${entry.path}`)
+			}
+			if (
+				importMap.map(({ kind, name }) => `${kind}:${name}`).includes(
+					`${entry.kind}:${entry.name}`,
+				)
+			) {
+				const entryIndex = importMap.findIndex(({ kind, name }) =>
+					`${kind}:${name}` === `${entry.kind}:${entry.name}`
+				)
+				importMap.with(entryIndex, entry)
+				continue
+			}
+			importMap.push(entry)
+		}
+		const raw = await Deno.readTextFile(this.path)
+		const json = JSON.parse(raw) as {
+			imports: Record<string, string>
+			scopes: Record<string, Record<string, string>>
+		}
+		json.imports = Object.fromEntries(
+			importMap.map(({ name, kind, path }) => [`${kind}:${name}`, path]),
+		)
+		await Deno.writeTextFile(this.path, JSON.stringify(raw, null, 2))
+	}
+
+	static async delete(
+		...entries: Omit<ImportMapEntry, 'path'>[]
+	): Promise<void> {
+		let importMap = await this.get()
+		for (const entry of entries) {
+			if (
+				!importMap.map(({ kind, name }) => `${kind}:${name}`).includes(
+					`${entry.kind}:${entry.name}`,
+				)
+			) {
+				throw new Error(`unknown entry ${entry.kind}:${entry.name}`)
+			}
+			importMap = importMap.filter(({ kind, name }) =>
+				`${kind}:${name}` !== `${entry.kind}:${entry.name}`
+			)
+		}
+		const raw = await Deno.readTextFile(this.path)
+		const json = JSON.parse(raw) as {
+			imports: Record<string, string>
+			scopes: Record<string, Record<string, string>>
+		}
+		json.imports = Object.fromEntries(
+			importMap.map(({ name, kind, path }) => [`${kind}:${name}`, path]),
+		)
+		await Deno.writeTextFile(this.path, JSON.stringify(raw, null, 2))
+	}
+
+	static #entryKind(name: string): ImportMapEntry['kind'] {
+		if (name.startsWith('dev:')) return 'dev'
+		if (name.startsWith('asset:')) return 'asset'
+		return null
 	}
 }
