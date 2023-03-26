@@ -45,8 +45,6 @@ async function initHandler(
 	)
 	const git = new Deno.Command('git', { args: ['init'] })
 	git.spawn()
-	git.stdout.pipeTo(Deno.stdout.writable)
-	git.stderr.pipeTo(Deno.stderr.writable)
 
 	//Execute arguments
 	for (const name in templateConfig.arguments) {
