@@ -198,6 +198,8 @@
     "https://deno.land/x/wait@0.1.12/log_symbols.ts": "cdf2d0aa44754d10fddd55999e933886a4d753f2acfc1219f629427ccc776ac7",
     "https://deno.land/x/wait@0.1.12/mod.ts": "83211441439cd0f794f4e95fbb6c766929dd6886169100d3bdf2ea1ea5e3adfe",
     "https://deno.land/x/wait@0.1.12/spinners.ts": "289346d54f8d6152a5dcd67b67e47784cf9b7a8a8f6f0b6dc041ebc2ef6bb76c",
-    "https://ejm.sh/https://raw.githubusercontent.com/denoland/deno/main/Releases.md": "2ea52469b93a2468b5ab7dd2683e6aad58e7932006b1405602f7ece47f7a73d1"
+    "https://ejm.sh/https://raw.githubusercontent.com/denoland/deno/main/Releases.md": "2ea52469b93a2468b5ab7dd2683e6aad58e7932006b1405602f7ece47f7a73d1",
+    "https://raw.githubusercontent.com/denoland/apiland/1.6.0/consts.ts": "ab199fc82eaef04e839c72e25b0cea7d26fd2d36f463650caa1bb3d6a1d609b8",
+    "https://raw.githubusercontent.com/denoland/apiland/1.6.0/types.d.ts": "1a9142397f0c2d3421f547651d7445bfb2839d0dd11cc8b11a943950ceb25362"
   }
 }
