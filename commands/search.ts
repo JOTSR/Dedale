@@ -1,6 +1,5 @@
 import { dedale } from '../definitions.ts'
-import { Command } from '../deps.ts'
-import { Module } from 'https://raw.githubusercontent.com/denoland/apiland/1.6.0/types.d.ts'
+import { Command, Module } from '../deps.ts'
 
 async function resolvePackages(provider: string, packageName: string) {
 	if (provider === 'deno.land/x') {
@@ -82,22 +81,7 @@ async function resolvePackages(provider: string, packageName: string) {
 		}
 		return
 	}
-	if (provider === 'esm.sh') {
-		throw new Error(`search not supported for ${provider}`)
-	}
-	if (provider === 'skypack.dev') {
-		throw new Error(`search not supported for ${provider}`)
-	}
-	if (provider === 'jspm.org') {
-		throw new Error(`search not supported for ${provider}`)
-	}
-	if (provider === 'jsdelivr.com') {
-		throw new Error(`search not supported for ${provider}`)
-	}
-	if (provider === 'unpkg.com') {
-		throw new Error(`search not supported for ${provider}`)
-	}
-	throw new Error(`unsupported provider ${provider}`)
+	throw new Error(`search unsupported for provider ${provider}`)
 }
 
 export type Search = {
