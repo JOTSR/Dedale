@@ -1,20 +1,32 @@
 import { Command } from '../deps.ts'
+import { ImportMap } from '../utils.ts'
 
 export type Uninstall = {
-	global: boolean
+	provider?: string
 	dev?: boolean
 }
 
-export function uninstallHandler(
-	{ global, dev }: Uninstall,
-	packageName: string,
+export async function uninstallHandler(
+	{ dev }: Uninstall,
+	...packageNames: string[]
 ) {
-	throw new Error('Not implemented')
+	for (const packageName of packageNames) {
+		try {
+			await ImportMap.delete({
+				name: packageName,
+				kind: dev ? 'dev' : 'asset',
+			})
+			console.log(`✔️ Package ${packageName} successfully removed`)
+		} catch (error) {
+			console.error(`❌ Package ${packageName} not found [${error}]`)
+		}
+	}
 }
 
 export const uninstallCommand = new Command()
-	.description('Uninstall depedency')
-	.option('-g, --global', 'Uninstall global dependency', { default: false })
+	.name('Uninstall depedency')
+	.version('0.1.0')
+	.description('Uinstall dependencies from import map')
 	.option('-d, --dev', 'Uninstall dev dependency', { default: false })
-	.arguments('<name:string>')
+	.arguments('<name...:string>')
 	.action(uninstallHandler)
