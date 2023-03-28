@@ -195,7 +195,7 @@ export async function showHandler({ provider, doc }: Show, query: string) {
 			doc,
 		)
 	} catch (e) {
-		console.error(`Package not found [${e}]`)
+		console.error(`❌ Package not found [${e}]`)
 	}
 }
 
