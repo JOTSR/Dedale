@@ -66,9 +66,15 @@ export async function publishHandler(
 					)
 					Deno.exit(1)
 				}
-				;[commitHash] = new TextDecoder().decode(stdout).match(
+				const match = new TextDecoder().decode(stdout).match(
 					/commit\s(\S+)/,
-				) as [string]
+				)
+				if (match) {
+					commitHash = match[0]
+				} else {
+					console.error(`❌ Cant\'t find latest commit hash`)
+					Deno.exit(1)
+				}
 			}
 			const gitLog = new Deno.Command('git', {
 				args: [
