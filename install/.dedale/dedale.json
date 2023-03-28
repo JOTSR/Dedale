@@ -17,8 +17,9 @@
 		}
 	},
 	"providers": {
-		"deno-std": "https://deno.land/std",
-		"deno-x": "https://deno.land/x",
-		"esm": "https://esm.sh"
+		"deno-x": "deno.land/x",
+		"nest.land": "nest.land",
+		"github": "github.com",
+		"npm": "npm"
 	}
 }
