@@ -27,9 +27,6 @@ export async function commitHandler({
 	body,
 	footer,
 }: Commit, message: string) {
-	//  if (![
-	// 	'build', 'chore', 'ci', 'docs', 'feat', 'fix', 'perf', 'refactor', 'revert', 'style', 'test'
-	// ].includes(type)) throw new TypeError(`<${type}> is an uncompatible conventional commit type`)
 	if (message.toLocaleLowerCase() !== message) {
 		const keep = await Confirm.prompt({
 			message: `⚠️ Header is not in lower case, keep commit message?`,
