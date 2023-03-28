@@ -52,8 +52,6 @@ async function installFromGitub(
 				truncate: true,
 			})
 			await file?.pipeTo(fsFile.writable)
-			//TODO fix throw on closing
-			// fsFile.close()
 		}
 	} catch (e) {
 		throw new Error('Unable to install default dedale files', { cause: e })
