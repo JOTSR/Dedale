@@ -129,15 +129,15 @@ await installFromGitub(
 	loadInfo,
 )
 
-// loadInfo.push(
-// 	`Installing default templates from https://github.com/JOTSR/dedale-templates`,
-// 	{ current: 3, total: 6 },
-// )
-// await installFromGitub(
-// 	'JOTSR/dedale-templates',
-// 	dedale.session.directory.templates,
-// 	loadInfo,
-// )
+loadInfo.push(
+	`Installing default templates from https://github.com/JOTSR/dedale-templates`,
+	{ current: 3, total: 6 },
+)
+await installFromGitub(
+	'JOTSR/dedale-templates',
+	dedale.session.directory.templates,
+	loadInfo,
+)
 
 const config = await readConfigFile(dedale.session.directory.config)
 
