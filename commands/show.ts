@@ -9,6 +9,7 @@ import {
 } from '../deps.ts'
 import { dedale, PackageImportEntry } from '../definitions.ts'
 export async function resolvePackages(
+	log: boolean,
 	provider: string,
 	packageName: string,
 	doc?: boolean,
@@ -47,16 +48,18 @@ export async function resolvePackages(
 			`🌐 Page:   ${url}`,
 		]
 
-		await moduleLogger({
-			module,
-			version,
-			infos: upload_options.repository,
-			links,
-			description: description ?? 'No description',
-			versions: versions.slice(0, 20),
-			readmeUrl: `${url}${readme?.path}`,
-			doc,
-		})
+		if (log) {
+			await moduleLogger({
+				module,
+				version,
+				infos: upload_options.repository,
+				links,
+				description: description ?? 'No description',
+				versions: versions.slice(0, 20),
+				readmeUrl: `${url}${readme?.path}`,
+				doc,
+			})
+		}
 		return {
 			name: module,
 			path: `${url}${defaultModule?.path}`,
@@ -80,20 +83,24 @@ export async function resolvePackages(
 			`🔗 Import: https://nest.land/package/${name}/mod.ts`,
 			`🌐 Page:   https://nest.land/package/${name}`,
 		]
-		await moduleLogger({
-			module: packageInfos.name,
-			version: packageInfos.latestVersion.split('@')[1],
-			infos: packageInfos.owner,
-			links,
-			description: packageInfos.description ?? 'No description',
-			versions: packageInfos.packageUploadNames.map((version: string) =>
-				version.split('@')[1]
-			),
-			readmeUrl: `data:text/plain,${
-				encodeURIComponent('README not supported for nest.land')
-			}`,
-			doc,
-		})
+
+		if (log) {
+			await moduleLogger({
+				module: packageInfos.name,
+				version: packageInfos.latestVersion.split('@')[1],
+				infos: packageInfos.owner,
+				links,
+				description: packageInfos.description ?? 'No description',
+				versions: packageInfos.packageUploadNames.map((
+					version: string,
+				) => version.split('@')[1]),
+				readmeUrl: `data:text/plain,${
+					encodeURIComponent('README not supported for nest.land')
+				}`,
+				doc,
+			})
+		}
+
 		return {
 			name: packageInfos.name,
 			path: `https://nest.land/package/${name}/mod.ts`,
@@ -121,18 +128,20 @@ export async function resolvePackages(
 			`🌐 Page:   ${html_url}`,
 		]
 
-		await moduleLogger({
-			module,
-			version: versions[0].name,
-			infos: `✨ ${stargazers_counts}`,
-			links,
-			description,
-			versions: versions.map(({ name }: { name: string }) => name),
-			readmeUrl: `https://raw.githubusercontent.com/${name}/${
-				versions[0].name
-			}/README.md`,
-			doc,
-		})
+		if (log) {
+			await moduleLogger({
+				module,
+				version: versions[0].name,
+				infos: `✨ ${stargazers_counts}`,
+				links,
+				description,
+				versions: versions.map(({ name }: { name: string }) => name),
+				readmeUrl: `https://raw.githubusercontent.com/${name}/${
+					versions[0].name
+				}/README.md`,
+				doc,
+			})
+		}
 		return {
 			name: module,
 			path: `https://raw.githubusercontent.com/${name}/${
@@ -161,18 +170,20 @@ export async function resolvePackages(
 			`🌐 Page:   https://www.npmjs.com/package/${packageName}/v/${latest}`,
 		]
 
-		await moduleLogger({
-			module,
-			version: latest,
-			infos: author.name,
-			links,
-			description,
-			versions: versionEntries.slice(0, 20).map((
-				[version, _]: [string, unknown],
-			) => version),
-			readmeUrl: `data:text/plain,${encodeURIComponent(readme)}`,
-			doc,
-		})
+		if (log) {
+			await moduleLogger({
+				module,
+				version: latest,
+				infos: author.name,
+				links,
+				description,
+				versions: versionEntries.slice(0, 20).map((
+					[version, _]: [string, unknown],
+				) => version),
+				readmeUrl: `data:text/plain,${encodeURIComponent(readme)}`,
+				doc,
+			})
+		}
 		return {
 			name: module,
 			path: `npm:${packageName}@${latest}`,
@@ -190,6 +201,7 @@ export type Show = {
 export async function showHandler({ provider, doc }: Show, query: string) {
 	try {
 		await resolvePackages(
+			true,
 			provider ?? dedale.config?.defaultProvider ?? 'deno.land/x',
 			query,
 			doc,
