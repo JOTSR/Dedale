@@ -165,10 +165,10 @@ await installFromGitub(
 	loadInfo,
 )
 
-const config = await readConfigFile(dedale.session.directory.config)
+// const config = await readConfigFile(dedale.session.directory.config)
 
-loadInfo.push(`Caching plugins`, { current: 4, total: 6 })
-await installPlugins(config.plugins)
+// loadInfo.push(`Caching plugins`, { current: 4, total: 6 })
+// await installPlugins(config.plugins)
 
 loadInfo.push(
 	`Installing shell completion for ${
