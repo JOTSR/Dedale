@@ -179,7 +179,7 @@ await installFromGitub(
 // await installShellCompletions(Deno.build.os)
 
 loadInfo.push(`Installing cli`, { current: 6, total: 6 })
-await installCli('https://github.com/JOTSR/Dedale/main.ts')
+await installCli('https://raw.githubusercontent.com/JOTSR/Dedale/main/main.ts')
 
 console.log(
 	'Dédale is successfully installed, try "dedale -h" or visit https://doc.dedale.io',
