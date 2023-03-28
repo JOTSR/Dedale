@@ -5,6 +5,13 @@ import { dir, path, username } from './deps.ts'
  * Dédale configuration interface
  */
 export interface Config {
+	/**
+	 * File schema
+	 *
+	 * @example "./template.schema.json"
+	 * @item { "type": "string" }
+	 */
+	$schema?: string
 	//Templates
 	/**
 	 * Default template name of definition
@@ -122,6 +129,13 @@ export interface TemplateActions {
  * Template for directory initialisation
  */
 export interface Template {
+	/**
+	 * File schema
+	 *
+	 * @example "./template.schema.json"
+	 * @item { "type": "string" }
+	 */
+	$schema?: string
 	/**
 	 * Name of the template
 	 *
@@ -308,7 +322,7 @@ export const dedale: Dedale = {
 		directory: {
 			root: path.join(userDirectory, '.dedale'),
 			templates: path.join(userDirectory, '.dedale', 'templates'),
-			config: path.join(userDirectory, '.dedale', '.dedale.json'),
+			config: path.join(userDirectory, '.dedale', 'dedale.json'),
 		},
 	},
 	project: {},
@@ -317,11 +331,11 @@ export const dedale: Dedale = {
 
 export const configPath = await (async () => {
 	try {
-		const config = path.join(Deno.cwd(), '.dedale.json')
+		const config = path.join(Deno.cwd(), 'dedale.json')
 		await Deno.readTextFile(config)
 		return config
 	} catch {
-		return path.join(dedale.session.home, '.dedale', '.dedale.json')
+		return path.join(dedale.session.home, '.dedale', 'dedale.json')
 	}
 })()
 
@@ -338,7 +352,7 @@ export type Tree = {
 
 export const tree: Tree = {
 	config: {
-		file: '.dedale.json',
+		file: 'dedale.json',
 	},
 	folder: {
 		dir: '.dedale',

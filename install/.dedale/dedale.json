@@ -1,10 +1,10 @@
 {
-	"$schema": "./.dedale.schema.json",
+	"$schema": "./dedale.schema.json",
 	"autoUpdate": true,
 	"notifyUpdate": true,
 	"autoUpgrade": true,
 	"notifyUpgrade": true,
-	"defaultProvider": "https://deno.land/x",
+	"defaultProvider": "deno.land/x",
 	"defaultTemplate": "vscode-mod",
 	"plugins": {
 		"readme-generator": {
@@ -20,10 +20,5 @@
 		"deno-std": "https://deno.land/std",
 		"deno-x": "https://deno.land/x",
 		"esm": "https://esm.sh"
-	},
-	"scriptRunner": {
-		"command": "task",
-		"help": "--help",
-		"path": "deno"
 	}
 }

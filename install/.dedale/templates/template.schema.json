@@ -74,6 +74,13 @@
 			"additionalProperties": false,
 			"description": "Template for directory initialisation",
 			"properties": {
+				"$schema": {
+					"description": "File schema",
+					"examples": [
+						"./template.schema.json"
+					],
+					"type": "string"
+				},
 				"arguments": {
 					"additionalProperties": {
 						"additionalProperties": false,

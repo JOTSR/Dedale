@@ -9,7 +9,7 @@
 	},
 	"tasks": {
 		"start": "deno run -A --unstable ./main.ts",
-		"build:schema": "deno task alias:schema_gen -t Template -o ./install/.dedale/templates/template.schema.json & deno task alias:schema_gen -t Config -o ./install/.dedale/templates/config.schema.json",
+		"build:schema": "deno task alias:schema_gen -t Template -o ./install/.dedale/templates/template.schema.json & deno task alias:schema_gen -t Config -o ./install/.dedale/dedale.schema.json",
 		"alias:schema_gen": "deno run --allow-read --allow-write npm:ts-json-schema-generator --strict-tuples --no-type-check -p ./definitions.ts"
 	}
 }

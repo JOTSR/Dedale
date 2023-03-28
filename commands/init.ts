@@ -34,7 +34,7 @@ async function initHandler(
 	//Setup directory
 	if (directory !== Deno.cwd()) await fs.ensureDir(directory)
 	await Deno.writeTextFile(
-		path.join(directory, '.dedale.json'),
+		path.join(directory, 'dedale.json'),
 		JSON.stringify(dedale.config),
 		{ create: true },
 	)

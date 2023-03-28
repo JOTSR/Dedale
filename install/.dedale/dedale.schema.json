@@ -6,6 +6,13 @@
 			"additionalProperties": false,
 			"description": "Dédale configuration interface",
 			"properties": {
+				"$schema": {
+					"description": "File schema",
+					"examples": [
+						"./template.schema.json"
+					],
+					"type": "string"
+				},
 				"autoUpdate": {
 					"description": "Automatic update of deno Set defaultVersion to the latest",
 					"type": "boolean"
