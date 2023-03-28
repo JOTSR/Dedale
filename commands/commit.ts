@@ -37,8 +37,6 @@ export function commitHandler({
 
 	const git = new Deno.Command('git', { args: ['commit', '-m', commit] })
 	git.spawn()
-	git.stdout.pipeTo(Deno.stdout.writable)
-	git.stderr.pipeTo(Deno.stderr.writable)
 	/* Conventional commit format
 
 	<type>[optional scope]!: <description>
