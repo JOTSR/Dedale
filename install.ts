@@ -1,7 +1,7 @@
-import { Config, dedale, Tree } from './definitions.ts'
+import { dedale, Tree } from './definitions.ts'
 import { tree } from './definitions.ts'
 import { fs, path } from './deps.ts'
-import { LoadInfo, readConfigFile } from './utils.ts'
+import { LoadInfo } from './utils.ts'
 
 const loadInfo = new LoadInfo()
 
@@ -22,12 +22,12 @@ async function makeTree(tree: Tree, root: string) {
 	}
 }
 
-async function installPlugins(plugins: Config['plugins']) {
-	for (const plugin in plugins) {
-		//Cache plugin in .deno/
-		await import(plugins[plugin].path)
-	}
-}
+// async function installPlugins(plugins: Config['plugins']) {
+// 	for (const plugin in plugins) {
+// 		//Cache plugin in .deno/
+// 		await import(plugins[plugin].path)
+// 	}
+// }
 
 async function installFromGitub(
 	owner: string,
@@ -80,43 +80,43 @@ async function installFromGitub(
 	}
 }
 
-async function installShellCompletions(os: typeof Deno.build.os) {
-	switch (os) {
-		case 'windows':
-			{
-				const completions = await fetch(
-					'https://github.com/JOTSR/Dedale/install/DedaleCompletions.ps1',
-				)
-				const modulePath = Deno.env.get('PSModulePath')?.split(';')[0]
-				if (modulePath === undefined) {
-					throw new Error(
-						'$env:PSModulePath is not set, can\'t install completions for powershell',
-					)
-				}
+// async function installShellCompletions(os: typeof Deno.build.os) {
+// 	switch (os) {
+// 		case 'windows':
+// 			{
+// 				const completions = await fetch(
+// 					'https://github.com/JOTSR/Dedale/install/DedaleCompletions.ps1',
+// 				)
+// 				const modulePath = Deno.env.get('PSModulePath')?.split(';')[0]
+// 				if (modulePath === undefined) {
+// 					throw new Error(
+// 						'$env:PSModulePath is not set, can\'t install completions for powershell',
+// 					)
+// 				}
 
-				const script = await Deno.open(
-					path.join(modulePath, 'DedaleCompletions.ps1'),
-					{
-						create: true,
-						write: true,
-						truncate: true,
-					},
-				)
-				await completions.body?.pipeTo(script.writable)
-				script.close()
-				console.log(`DedaleCompletions.ps1 added to $.split(';')[0]`)
-				console.log(
-					`Add '. ($PSScriptRoot + "\\Modules\\DedaleCompletions.ps1")' to your $PROFILE`,
-				)
-			}
-			break
-		case 'linux':
-		case 'darwin':
-			//TODO Cliffy shell completions
-			throw new Error('Not implemented')
-			// break
-	}
-}
+// 				const script = await Deno.open(
+// 					path.join(modulePath, 'DedaleCompletions.ps1'),
+// 					{
+// 						create: true,
+// 						write: true,
+// 						truncate: true,
+// 					},
+// 				)
+// 				await completions.body?.pipeTo(script.writable)
+// 				script.close()
+// 				console.log(`DedaleCompletions.ps1 added to $.split(';')[0]`)
+// 				console.log(
+// 					`Add '. ($PSScriptRoot + "\\Modules\\DedaleCompletions.ps1")' to your $PROFILE`,
+// 				)
+// 			}
+// 			break
+// 		case 'linux':
+// 		case 'darwin':
+// 			//TODO Cliffy shell completions
+// 			throw new Error('Not implemented')
+// 			// break
+// 	}
+// }
 
 async function installCli(url: string) {
 	const command = new Deno.Command(Deno.execPath(), {
@@ -170,13 +170,13 @@ await installFromGitub(
 // loadInfo.push(`Caching plugins`, { current: 4, total: 6 })
 // await installPlugins(config.plugins)
 
-loadInfo.push(
-	`Installing shell completion for ${
-		Deno.build.os === 'windows' ? 'powershell' : 'bash'
-	}`,
-	{ current: 5, total: 6 },
-)
-await installShellCompletions(Deno.build.os)
+// loadInfo.push(
+// 	`Installing shell completion for ${
+// 		Deno.build.os === 'windows' ? 'powershell' : 'bash'
+// 	}`,
+// 	{ current: 5, total: 6 },
+// )
+// await installShellCompletions(Deno.build.os)
 
 loadInfo.push(`Installing cli`, { current: 6, total: 6 })
 await installCli('https://github.com/JOTSR/Dedale/main.ts')
