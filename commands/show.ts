@@ -165,11 +165,15 @@ export type Show = {
 }
 
 export async function showHandler({ provider, doc }: Show, query: string) {
-	await resolvePackages(
-		provider ?? dedale.config?.defaultProvider ?? 'deno.land/x',
-		query,
-		doc,
-	)
+	try {
+		await resolvePackages(
+			provider ?? dedale.config?.defaultProvider ?? 'deno.land/x',
+			query,
+			doc,
+		)
+	} catch (e) {
+		console.error(`Package not found [${e}]`)
+	}
 }
 
 export const showCommand = new Command()
