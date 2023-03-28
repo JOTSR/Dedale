@@ -205,7 +205,7 @@ export const showCommand = new Command()
 	.version('0.1.0')
 	.option(
 		'-p, --provider <url:string>',
-		'Provider to use (ex: deno.land/x',
+		'Provider to use (ex: deno.land/x)',
 	)
 	.option('-d, --doc', 'Display readme')
 	.arguments('<name:string>')
