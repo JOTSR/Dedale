@@ -5,7 +5,7 @@ import {
 	Template,
 	TemplateActions,
 } from './definitions.ts'
-import { ConsoleColors, ConsoleSpinner, DOMParser, fs, path } from './deps.ts'
+import { ConsoleColors, ConsoleSpinner, fs, path } from './deps.ts'
 
 /**
  * It reads a template file, replaces all variables with their values, and returns the template
@@ -223,69 +223,6 @@ function replaceTemplatePlugins(
 		)
 		return { name, arguments: args }
 	})
-}
-
-/**
- * Yield each files with their given url of a directory of a github repository
- *
- * @param url - url of the github directory (https://github.com/${OWNER}/${REPO}/tree/${BRANCH}/${FOLDER_AND_SUBFOLDERS_PATH})
- * @example
- * const url = 'https://github.com/JOTSR/Denum/tree/main/modules'
- * for await (const { url, relativePath, file } of githubFolderDownload(url)) {
- *      console.log(`Copying ${url}`)
- * 		const outPath = path.join(Deno.cwd(), relativePath)
- * 		await fs.ensureFile(outPath)
- * 		const fsFile = await Deno.open(outPath, {
- *          create: true,
- *          write: true,
- *          truncate: true
- *      })
- *      await file?.pipeTo(fsFile.writable)
- *      fsFile.close()
- * }
- */
-export async function* githubFolderDownload(
-	url: string,
-): AsyncGenerator<
-	{
-		url: string
-		relativePath: string
-		file: ReadableStream<Uint8Array> | null
-	}
-> {
-	const root = await fetch(url)
-	const dom = new DOMParser().parseFromString(await root.text(), 'text/html')
-
-	//@ts-ignore relative path memory trick
-	githubFolderDownload.rootLength ??= new URL(url).pathname.split('/').length
-	const relativePath = new URL(url).pathname.split('/').slice(
-		//@ts-ignore relative path memory trick
-		githubFolderDownload.rootLength,
-	).join('/')
-
-	//@ts-ignore see github link structure
-	const permalink: string | null = dom?.querySelector(
-		'a[data-permalink-href]',
-	)?.getAttribute('data-permalink-href')
-
-	if (permalink) {
-		yield {
-			url,
-			relativePath,
-			file: (await fetch(`https://raw.githubusercontent.com${permalink}`))
-				.body,
-		}
-	}
-
-	for (
-		const link of dom?.getElementsByClassName(
-			'js-navigation-open Link--primary',
-		) ?? []
-	) {
-		const href = link.getAttribute('href')
-		if (href === null) continue
-		yield* githubFolderDownload(`https://github.com${href}`)
-	}
 }
 
 /**

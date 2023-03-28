@@ -1,7 +1,7 @@
 import { Config, dedale, Tree } from './definitions.ts'
 import { tree } from './definitions.ts'
 import { fs, path } from './deps.ts'
-import { githubFolderDownload, LoadInfo, readConfigFile } from './utils.ts'
+import { LoadInfo, readConfigFile } from './utils.ts'
 
 const loadInfo = new LoadInfo()
 
@@ -30,28 +30,50 @@ async function installPlugins(plugins: Config['plugins']) {
 }
 
 async function installFromGitub(
-	url: string,
+	owner: string,
+	repo: string,
+	baseUrl: string,
 	outputDirectory: string,
 	logger: LoadInfo,
+	url = '',
 ) {
-	if (!url.startsWith('https://github.com/')) {
-		url = `https://github.com/${url}`
+	if (!url.startsWith('https://api.github.com')) {
+		url =
+			`https://api.github.com/repos/${owner}/${repo}/contents/${baseUrl}`
 	}
 	try {
-		for await (
-			const { url: fileUrl, relativePath, file } of githubFolderDownload(
-				url,
-			)
+		const entries = await (await fetch(url)).json() as Record<
+			string,
+			string
+		>[]
+		for (
+			const { path: relative_path, download_url, url, type, html_url }
+				of entries
 		) {
-			logger.push(`Installing: ${fileUrl}`, undefined, true)
-			const outPath = path.join(outputDirectory, relativePath)
-			await fs.ensureFile(outPath)
-			const fsFile = await Deno.open(outPath, {
-				create: true,
-				write: true,
-				truncate: true,
-			})
-			await file?.pipeTo(fsFile.writable)
+			if (type === 'file') {
+				logger.push(`Installing: ${html_url}`, undefined, true)
+				const outPath = path.join(
+					outputDirectory,
+					relative_path.replace(baseUrl, ''),
+				)
+				await fs.ensureFile(outPath)
+				const file = await fetch(download_url)
+				const fsFile = await Deno.open(outPath, {
+					create: true,
+					write: true,
+					truncate: true,
+				})
+				await file.body?.pipeTo(fsFile.writable)
+			} else {
+				await installFromGitub(
+					owner,
+					repo,
+					baseUrl,
+					outputDirectory,
+					logger,
+					url,
+				)
+			}
 		}
 	} catch (e) {
 		throw new Error('Unable to install default dedale files', { cause: e })
@@ -124,7 +146,9 @@ loadInfo.push(
 	{ current: 2, total: 6 },
 )
 await installFromGitub(
-	'JOTSR/Dedale/tree/main/install/.dedale',
+	'JOTSR',
+	'Dedale',
+	'install/.dedale/',
 	dedale.session.directory.root,
 	loadInfo,
 )
@@ -134,7 +158,9 @@ loadInfo.push(
 	{ current: 3, total: 6 },
 )
 await installFromGitub(
-	'JOTSR/dedale-templates',
+	'JOTSR',
+	'dedale-templates',
+	'',
 	dedale.session.directory.templates,
 	loadInfo,
 )
