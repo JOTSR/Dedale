@@ -358,3 +358,9 @@ export type ImportMapEntry = {
 	kind: 'dev' | 'asset' | null
 	path: string
 }
+
+export type PackageImportEntry = {
+	name: string
+	path: string
+	latest: string
+}

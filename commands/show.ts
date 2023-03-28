@@ -7,12 +7,12 @@ import {
 	renderMarkdown,
 	Table,
 } from '../deps.ts'
-import { dedale } from '../definitions.ts'
+import { dedale, PackageImportEntry } from '../definitions.ts'
 async function resolvePackages(
 	provider: string,
 	packageName: string,
 	doc?: boolean,
-) {
+): Promise<PackageImportEntry> {
 	if (provider === 'deno.land/x') {
 		const moduleName = packageName.includes('@')
 			? packageName
@@ -57,7 +57,13 @@ async function resolvePackages(
 			readmeUrl: `${url}${readme?.path}`,
 			doc,
 		})
-		return
+		return {
+			name: module,
+			path: `${url}${defaultModule?.path}`,
+			latest: `https://deno.land/x/${module}@${
+				versions[0]
+			}${defaultModule?.path}`,
+		}
 	}
 	if (provider === 'nest.land') {
 		const [name, _] = packageName.split('@')
@@ -71,7 +77,7 @@ async function resolvePackages(
 			})).json()).body
 
 		const links = [
-			`🔗 Import: https://nest.land/package/${name}/`,
+			`🔗 Import: https://nest.land/package/${name}/mod.ts`,
 			`🌐 Page:   https://nest.land/package/${name}`,
 		]
 		await moduleLogger({
@@ -88,7 +94,12 @@ async function resolvePackages(
 			}`,
 			doc,
 		})
-		return
+		return {
+			name: packageInfos.name,
+			path: `https://nest.land/package/${name}/mod.ts`,
+			latest:
+				`https://nest.land/package/${packageInfos.latestVersion}/mod.ts`,
+		}
 	}
 	if (provider === 'github.com') {
 		const [name, _] = packageName.split('@')
@@ -122,7 +133,15 @@ async function resolvePackages(
 			}/README.md`,
 			doc,
 		})
-		return
+		return {
+			name: module,
+			path: `https://raw.githubusercontent.com/${name}/${
+				versions[0].name
+			}`,
+			latest: `https://raw.githubusercontent.com/${name}/${
+				versions[0].name
+			}`,
+		}
 	}
 	if (provider === 'npm') {
 		const results = await (await fetch(
@@ -154,7 +173,11 @@ async function resolvePackages(
 			readmeUrl: `data:text/plain,${encodeURIComponent(readme)}`,
 			doc,
 		})
-		return
+		return {
+			name: module,
+			path: `npm:${packageName}@${latest}`,
+			latest: `npm:${packageName}@${latest}`,
+		}
 	}
 	throw new Error(`show unsupported for provider ${provider}`)
 }
