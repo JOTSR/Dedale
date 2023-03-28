@@ -8,7 +8,7 @@ import {
 	Table,
 } from '../deps.ts'
 import { dedale, PackageImportEntry } from '../definitions.ts'
-async function resolvePackages(
+export async function resolvePackages(
 	provider: string,
 	packageName: string,
 	doc?: boolean,
